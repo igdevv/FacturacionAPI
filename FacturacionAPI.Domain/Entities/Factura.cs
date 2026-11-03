@@ -13,6 +13,8 @@ namespace FacturacionAPI.Domain.Entities
         public List<DetalleFactura> _detalles { get; private set; } = new();
         public IReadOnlyCollection<DetalleFactura> Detalles => _detalles.AsReadOnly();
         public decimal Subtotal => _detalles.Sum(d => d.Subtotal);
+        public decimal Itbis => _detalles.Sum(d => d.Itbis);
+        public decimal Total => Subtotal + Itbis;
         public int CantidadTotalProductos => _detalles.Sum(d => d.Cantidad);
         public EstadoFactura Estado { get; private set; }
 
@@ -45,9 +47,19 @@ namespace FacturacionAPI.Domain.Entities
 
         public void EmitirFactura()
         {
+            if (Estado != EstadoFactura.Borrador)
+            {
+                throw new InvalidOperationException("Solo se pueden emitir facturas en estado Borrador.");
+            }
+
             if (!_detalles.Any())
             {
                 throw new InvalidOperationException("No se puede emitir una factura sin detalles.");
+            }
+
+            if (Total <= 0)
+            {
+                throw new InvalidOperationException("No se puede emitir una factura con total cero o negativo.");
             }
 
             Estado = EstadoFactura.Emitida;
