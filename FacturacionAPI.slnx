@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="FacturacionAPI.Domain.Tests/FacturacionAPI.Domain.Tests.csproj" />
+  <Project Path="FacturacionAPI.Domain/FacturacionAPI.Domain.csproj" />
+</Solution>
