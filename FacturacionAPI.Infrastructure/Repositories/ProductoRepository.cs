@@ -28,5 +28,29 @@ namespace FacturacionAPI.Infrastructure.Repositories
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<Producto?> ObtenerPorIdAsync(int id)
+        {
+            var producto = await _dbContext.Productos
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            return producto;
+        }
+
+        public async Task ActualizarAsync(Producto producto)
+        {
+            _dbContext.Productos.Update(producto);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<Producto>> BuscarPorNombreAsync(string nombre)
+        {
+            return await _dbContext.Productos
+                .AsNoTracking()
+                .Where(p => p.Nombre.Contains(nombre))
+                .ToListAsync();
+        }
     }
 }

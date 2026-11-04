@@ -1,5 +1,10 @@
 using FacturacionAPI.Application.Interfaces;
+using FacturacionAPI.Application.Productos.AumentarStock;
+using FacturacionAPI.Application.Productos.BuscarProductos;
+using FacturacionAPI.Application.Productos.CambiarPrecioProducto;
 using FacturacionAPI.Application.Productos.CrearProducto;
+using FacturacionAPI.Application.Productos.DescontarStock;
+using FacturacionAPI.Application.Productos.ObtenerProductoPorId;
 using FacturacionAPI.Application.Productos.ObtenerProductos;
 using FacturacionAPI.Infrastructure.Persistence;
 using FacturacionAPI.Infrastructure.Repositories;
@@ -22,6 +27,11 @@ builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
 
 builder.Services.AddScoped<CrearProductoService>();
 builder.Services.AddScoped<ObtenerProductosService>();
+builder.Services.AddScoped<ObtenerProductoPorIdService>();
+builder.Services.AddScoped<CambiarPrecioProductoService>();
+builder.Services.AddScoped<AumentarStockService>();
+builder.Services.AddScoped<DescontarStockService>();
+builder.Services.AddScoped<BuscarProductosService>();
 
 builder.Services.AddSwaggerGen();
 
