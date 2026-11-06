@@ -16,6 +16,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FacturacionAPI.Domain\FacturacionAPI.Domain.csproj" />
+    <ProjectReference Include="..\FacturacionAPI.Application\FacturacionAPI.Application.csproj" />
+    <ProjectReference Include="..\FacturacionAPI.Infrastructure\FacturacionAPI.Infrastructure.csproj" />
+    <ProjectReference Include="..\FacturacionAPI.API\FacturacionAPI.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

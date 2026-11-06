@@ -1,4 +1,5 @@
 ﻿using System;
+using FacturacionAPI.Domain.Excepciones;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,7 +21,7 @@ namespace FacturacionAPI.Domain.Entities
 
             if (precio <= 0)
             {
-                throw new InvalidOperationException("El precio no puede cero.");
+                throw new ArgumentException("El precio debe ser mayor que cero.");
             }
 
             if (stock < 0)
@@ -28,17 +29,21 @@ namespace FacturacionAPI.Domain.Entities
                 throw new ArgumentException("El stock no puede ser negativo.");
             }
 
-            Nombre = nombre;
+            ValidarPrecisionPrecio(precio);
+            Nombre = nombre.Trim();
             Precio = precio;
             Stock = stock;
         }
 
         public void DescontarStock(int cantidad)
         {
-            if (cantidad <= 0 || cantidad > Stock)
+            if (cantidad <= 0)
             {
-                throw new InvalidOperationException("Cantidad inválida o inventario insuficiente.");
+                throw new ArgumentException("La cantidad debe ser mayor que cero.");
             }
+
+            if (cantidad > Stock)
+                throw new ConflictoNegocioException("Inventario insuficiente.");
 
             Stock -= cantidad;
         }
@@ -47,8 +52,11 @@ namespace FacturacionAPI.Domain.Entities
         {
             if (cantidad <= 0)
             {
-                throw new InvalidOperationException("La cantidad debe ser mayor que cero");
+                throw new ArgumentException("La cantidad debe ser mayor que cero.");
             }
+
+            if (cantidad > int.MaxValue - Stock)
+                throw new ArgumentException("La cantidad excede el stock máximo permitido.");
 
             Stock += cantidad;
         }
@@ -60,7 +68,14 @@ namespace FacturacionAPI.Domain.Entities
                 throw new ArgumentException("El nuevo precio debe ser mayor que cero.");
             }
 
+            ValidarPrecisionPrecio(nuevoPrecio);
             Precio = nuevoPrecio;
+        }
+
+        private static void ValidarPrecisionPrecio(decimal precio)
+        {
+            if (precio > 9999999999999999.99m || decimal.Round(precio, 2) != precio)
+                throw new ArgumentException("El precio debe caber en decimal(18,2), con máximo dos decimales.");
         }
         
     }

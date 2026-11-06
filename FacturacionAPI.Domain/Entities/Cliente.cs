@@ -24,7 +24,10 @@ namespace FacturacionAPI.Domain.Entities
                 throw new ArgumentException("El RNC o Cédula es obligatorio.");
             }
 
-            Nombre = nombre;
+            if (rncCedula.Trim().Length > 450)
+                throw new ArgumentException("El RNC o Cédula no puede superar los 450 caracteres.");
+
+            Nombre = nombre.Trim();
             RncCedula = rncCedula.Trim();
             Correo = correo?.Trim().ToLowerInvariant();
             Telefono = telefono;

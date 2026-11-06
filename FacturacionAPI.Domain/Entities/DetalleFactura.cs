@@ -8,6 +8,7 @@ namespace FacturacionAPI.Domain.Entities
     {
         public int Id { get; private set; }
         public int ProductoId { get; private set; }
+        public Producto Producto { get; private set; } = null!;
         public int FacturaId { get; private set; }
         public int Cantidad { get; private set; }
         public decimal PrecioUnitario { get; private set; }

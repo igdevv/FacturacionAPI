@@ -1,0 +1,8 @@
+**/bin
+**/obj
+.vs
+.vscode
+.git
+**/node_modules
+**/.env
+**/appsettings.Development.json

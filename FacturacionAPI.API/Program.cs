@@ -1,4 +1,10 @@
+using FacturacionAPI.Application.Clientes.CrearCliente;
+using FacturacionAPI.Application.Clientes.ObtenerClientes;
+using FacturacionAPI.Application.Clientes.ObtenerClientesPorId;
+using FacturacionAPI.Application.Clientes.ObtenerTodosLosClientes;
 using FacturacionAPI.Application.Interfaces;
+using FacturacionAPI.Application.Facturas;
+using FacturacionAPI.API.Exceptions;
 using FacturacionAPI.Application.Productos.AumentarStock;
 using FacturacionAPI.Application.Productos.BuscarProductos;
 using FacturacionAPI.Application.Productos.CambiarPrecioProducto;
@@ -15,6 +21,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -24,6 +32,11 @@ builder.Services.AddDbContext<AppDbContext>(op =>
 });
 
 builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IFacturaRepository, FacturaRepository>();
+builder.Services.AddScoped<CrearFacturaService>();
+builder.Services.AddScoped<ObtenerFacturasService>();
+builder.Services.AddScoped<EmitirFacturaService>();
 
 builder.Services.AddScoped<CrearProductoService>();
 builder.Services.AddScoped<ObtenerProductosService>();
@@ -33,9 +46,17 @@ builder.Services.AddScoped<AumentarStockService>();
 builder.Services.AddScoped<DescontarStockService>();
 builder.Services.AddScoped<BuscarProductosService>();
 
+
+builder.Services.AddScoped<CrearClienteService>();
+builder.Services.AddScoped<ObtenerClientesService>();
+builder.Services.AddScoped<ObtenerClientePorIdService>();
+builder.Services.AddScoped<ObtenerTodosLosClientesService>();
+
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

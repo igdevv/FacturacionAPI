@@ -29,11 +29,12 @@ namespace FacturacionAPI.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Producto?> ObtenerPorIdAsync(int id)
+        public async Task<Producto?> ObtenerPorIdAsync(int id, bool seguimiento = false)
         {
-            var producto = await _dbContext.Productos
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id);
+            var consulta = _dbContext.Productos.AsQueryable();
+            if (!seguimiento)
+                consulta = consulta.AsNoTracking();
+            var producto = await consulta.FirstOrDefaultAsync(p => p.Id == id);
 
             return producto;
         }
@@ -52,5 +53,8 @@ namespace FacturacionAPI.Infrastructure.Repositories
                 .Where(p => p.Nombre.Contains(nombre))
                 .ToListAsync();
         }
+
+        public Task<List<Producto>> ObtenerPorIdsAsync(IReadOnlyCollection<int> ids) =>
+            _dbContext.Productos.AsNoTracking().Where(p => ids.Contains(p.Id)).ToListAsync();
     }
 }

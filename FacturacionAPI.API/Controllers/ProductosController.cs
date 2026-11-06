@@ -39,7 +39,7 @@ namespace FacturacionAPI.API.Controllers
         {
             var producto = await _crearProductoService.EjecutarAsync(dto);
 
-            return StatusCode(StatusCodes.Status201Created, producto);
+            return CreatedAtAction(nameof(ObtenerPorId), new { id = producto.Id }, producto);
         }
 
         [HttpGet]
@@ -102,7 +102,7 @@ namespace FacturacionAPI.API.Controllers
         public async Task<IActionResult> BuscarPorNombre([FromQuery]string nombre)
         {
             if (string.IsNullOrWhiteSpace(nombre))
-                return BadRequest("Debes indicar un nombre para buscar.");
+                return Problem(statusCode: 400, title: "Datos inválidos", detail: "Debes indicar un nombre para buscar.");
 
             var productos = await _buscarProductos.EjecutarAsync(nombre);
 

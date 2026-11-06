@@ -9,8 +9,9 @@ namespace FacturacionAPI.Application.Interfaces
     {
         Task AgregarAsync(Producto producto);
         Task<List<Producto>> ObtenerTodosAsync();
-        Task<Producto?> ObtenerPorIdAsync(int id);
+        Task<Producto?> ObtenerPorIdAsync(int id, bool seguimiento = false);
         Task ActualizarAsync(Producto producto);
         Task<List<Producto>> BuscarPorNombreAsync(string nombre);
+        Task<List<Producto>> ObtenerPorIdsAsync(IReadOnlyCollection<int> ids);
     }
 }

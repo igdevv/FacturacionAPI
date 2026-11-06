@@ -1,4 +1,5 @@
 ﻿using FacturacionAPI.Domain.Enums;
+using FacturacionAPI.Domain.Excepciones;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,7 +11,8 @@ namespace FacturacionAPI.Domain.Entities
         public int Id { get; private set; }
         public int ClienteId { get; private set; }
         public DateTime FechaEmision { get; private set; }
-        public List<DetalleFactura> _detalles { get; private set; } = new();
+        private readonly List<DetalleFactura> _detalles = new();
+        public Cliente Cliente { get; private set; } = null!;
         public IReadOnlyCollection<DetalleFactura> Detalles => _detalles.AsReadOnly();
         public decimal Subtotal => _detalles.Sum(d => d.Subtotal);
         public decimal Itbis => _detalles.Sum(d => d.Itbis);
@@ -38,7 +40,7 @@ namespace FacturacionAPI.Domain.Entities
 
             if (Estado != EstadoFactura.Borrador)
             {
-                throw new InvalidOperationException(
+                throw new ConflictoNegocioException(
                     "No se pueden agregar detalles a una factura que no está en borrador.");
             }
 
@@ -49,17 +51,17 @@ namespace FacturacionAPI.Domain.Entities
         {
             if (Estado != EstadoFactura.Borrador)
             {
-                throw new InvalidOperationException("Solo se pueden emitir facturas en estado Borrador.");
+                throw new ConflictoNegocioException("Solo se pueden emitir facturas en estado Borrador.");
             }
 
             if (!_detalles.Any())
             {
-                throw new InvalidOperationException("No se puede emitir una factura sin detalles.");
+                throw new ConflictoNegocioException("No se puede emitir una factura sin detalles.");
             }
 
             if (Total <= 0)
             {
-                throw new InvalidOperationException("No se puede emitir una factura con total cero o negativo.");
+                throw new ConflictoNegocioException("No se puede emitir una factura con total cero o negativo.");
             }
 
             Estado = EstadoFactura.Emitida;

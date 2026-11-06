@@ -1,80 +1,75 @@
 ﻿using FacturacionAPI.Domain.Entities;
+using FacturacionAPI.Domain.Excepciones;
 
-namespace FacturacionAPI.Domain.Tests
+namespace FacturacionAPI.Domain.Tests;
+
+public class ProductoTests
 {
-    public class ProductoTests
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("  ")]
+    public void Crear_NombreInvalido(string? nombre) =>
+        Assert.Throws<ArgumentException>(() => new Producto(nombre!, 10m, 0));
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void Crear_PrecioInvalido(decimal precio) =>
+        Assert.Throws<ArgumentException>(() => new Producto("Mouse", precio, 0));
+
+    [Fact]
+    public void Crear_StockNegativo() =>
+        Assert.Throws<ArgumentException>(() => new Producto("Mouse", 10m, -1));
+
+    [Fact]
+    public void Precio_NoPermiteRedondeoSilencioso() =>
+        Assert.Throws<ArgumentException>(() => new Producto("Mouse", 1.001m, 0));
+
+    [Fact]
+    public void Stock_AumentaYDescuenta()
     {
-        //[Fact]
+        var producto = new Producto("Mouse", 10m, 5);
+        producto.AumentarStock(3);
+        Assert.Equal(8, producto.Stock);
+        producto.DescontarStock(8);
+        Assert.Equal(0, producto.Stock);
+    }
 
-        //public void DescontarStock_CantidadValida_DisminuyeStock()
-        //{
-        //    // Arrange: preparar los datos
-        //    var producto = new Producto("Teclado", 1500m, 10);
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-5)]
+    public void Stock_CantidadInvalidaNoModifica(int cantidad)
+    {
+        var producto = new Producto("Mouse", 10m, 5);
+        Assert.Throws<ArgumentException>(() => producto.AumentarStock(cantidad));
+        Assert.Throws<ArgumentException>(() => producto.DescontarStock(cantidad));
+        Assert.Equal(5, producto.Stock);
+    }
 
+    [Fact]
+    public void Descontar_StockInsuficienteNoModifica()
+    {
+        var producto = new Producto("Mouse", 10m, 5);
+        Assert.Throws<ConflictoNegocioException>(() => producto.DescontarStock(6));
+        Assert.Equal(5, producto.Stock);
+    }
 
-        //    // Act: ejecutar la operación
-        //    producto.DescontarStock(3);
+    [Fact]
+    public void Aumentar_NoDesbordaEntero()
+    {
+        var producto = new Producto("Mouse", 10m, int.MaxValue);
+        Assert.Throws<ArgumentException>(() => producto.AumentarStock(1));
+        Assert.Equal(int.MaxValue, producto.Stock);
+    }
 
-        //    // Assert: comprobar el resultado
-        //    Assert.Equal(7, producto.Stock);
-        //}
-
-        //public void DescontarStock_StockInsuficiente_LanzaExcepcion()
-        //{
-        //    var producto = new Producto("Mouse", 2000m, 10);
-
-        //    //producto.DescontarStock(15);
-
-        //    Assert.Throws<InvalidOperationException>(() =>
-        //    {
-        //        producto.DescontarStock(15);
-        //    });
-        //}
-
-        //[Theory]
-        //[InlineData(0)]
-        //[InlineData(-5)]
-        //[InlineData(15)]
-        //public void DescontarStock_CantidadInvalida_LanzaExcepcion(int cantidad)
-        //{
-        //    var producto = new Producto("Mouse", 800m, 10);
-
-        //    Assert.Throws<InvalidOperationException>(() =>
-        //    {
-        //        producto.DescontarStock(cantidad);
-        //    });
-
-        //    Assert.Equal(10, producto.Stock);
-        //}
-
-        //[Fact]
-        //public void CambiarPrecio_PrecioValido_ActualizarPrecio()
-        //{
-        //    var producto = new Producto("Mouse", 1500m, 10);
-
-        //    producto.CambiarPrecio(1800);
-
-        //    Assert.Equal(1800m, producto.Precio);
-        //}
-
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-100)]
-        public void CambiarPrecio_PrecioInvalido_LanzaExcepcion(decimal nuevoPrecio)
-        {
-            var producto = new Producto("Mouse", 1500m, 10);
-
-            // Aquí debes comprobar que se lanza ArgumentException.
-            Assert.Throws<ArgumentException>(() =>
-            {
-                producto.CambiarPrecio(-100);
-            });
-
-            Assert.Equal(1500m, producto.Precio);
-
-            // Después comprueba que el precio sigue siendo 1500.
-        }
-
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-100)]
+    public void CambiarPrecio_InvalidoNoModifica(decimal nuevoPrecio)
+    {
+        var producto = new Producto("Mouse", 1500m, 10);
+        Assert.Throws<ArgumentException>(() => producto.CambiarPrecio(nuevoPrecio));
+        Assert.Equal(1500m, producto.Precio);
     }
 }
-

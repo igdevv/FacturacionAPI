@@ -17,7 +17,7 @@ namespace FacturacionAPI.Application.Productos.CambiarPrecioProducto
 
         public async Task<bool> EjecutarAsync(int id, CambiarPrecioProductoDto dto)
         {
-            var producto = await _productoRepository.ObtenerPorIdAsync(id);
+            var producto = await _productoRepository.ObtenerPorIdAsync(id, seguimiento: true);
 
             if (producto is null)
                 return false;
