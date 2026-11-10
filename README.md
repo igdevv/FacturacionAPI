@@ -1,8 +1,12 @@
-# FacturacionAPI V1
+# FacturacionAPI | ASP.NET Core 10 · Clean Architecture · SQL Server
 
-Backend de aprendizaje para practicar C#, ASP.NET Core, Entity Framework Core y Clean Architecture con SQL Server. Gestiona productos, inventario, clientes y facturas internas, con reglas de negocio en el dominio y pruebas con xUnit.
+API REST de facturación interna para República Dominicana, construida como proyecto de portafolio y aprendizaje de backend. Utiliza C#, ASP.NET Core 10, Entity Framework Core y Clean Architecture con SQL Server. Gestiona productos, inventario, clientes y facturas internas, con reglas de negocio en el dominio y pruebas con xUnit.
 
 **La emisión es interna y didáctica. No constituye facturación electrónica certificada por la DGII, no genera e-NCF y no tiene integración fiscal.** La tasa fija utilizada es una simplificación del ejercicio, no una validación tributaria.
+
+## Estado del proyecto
+
+**V1 educativa implementada.** El repositorio contiene código de aplicación, migraciones y pruebas automatizadas. La compilación y las pruebas se verifican mediante GitHub Actions en cada pull request; las pruebas que requieren SQL Server necesitan una instancia configurada y pueden omitirse sin ella. No se presenta como sistema fiscal certificado ni como producto listo para producción.
 
 ## Tecnologías y requisitos
 
